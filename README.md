@@ -3,6 +3,8 @@
 A native Quattro/Quickshell active-window widget with the focused
 application's actual desktop icon and its window title.
 
+![Active Window + Icon in the Omarchy bar](preview.png)
+
 Icon lookup uses three pieces of runtime information, in order to handle both
 normal applications and Chromium web apps:
 
