@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "crmne.active-window",
+  "name": "Active Window + Icon",
+  "version": "1.0.0",
+  "author": "Carmine Paolino",
+  "license": "MIT",
+  "description": "Active-window title with the current application's desktop icon and adjustable icon saturation.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Active window + icon",
+    "description": "Current application icon and focused-window title.",
+    "category": "Compositor",
+    "allowMultiple": false,
+    "defaultSection": "left",
+    "defaults": {
+      "iconSaturation": 100,
+      "iconSize": 16,
+      "maxWidth": 280,
+      "showTitle": true
+    },
+    "schema": [
+      {
+        "key": "iconSaturation",
+        "type": "integer",
+        "label": "Icon saturation (%)",
+        "description": "0 is grayscale, 100 is the original icon, and 200 is fully boosted.",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "defaultValue": 100
+      },
+      {
+        "key": "iconSize",
+        "type": "integer",
+        "label": "Icon size",
+        "description": "Application-icon size in logical pixels.",
+        "min": 12,
+        "max": 22,
+        "step": 1,
+        "defaultValue": 16
+      },
+      {
+        "key": "maxWidth",
+        "type": "integer",
+        "label": "Maximum title width",
+        "description": "Maximum width of the active-window title in logical pixels.",
+        "min": 80,
+        "max": 600,
+        "step": 10,
+        "defaultValue": 280
+      },
+      {
+        "key": "showTitle",
+        "type": "boolean",
+        "label": "Show window title",
+        "description": "Disable this for an icon-only active-window widget.",
+        "defaultValue": true
+      }
+    ]
+  }
+}
