@@ -286,6 +286,30 @@ BarWidget {
         fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
         onClicked: root.saveSetting("showTitle", !root.showTitle)
       }
+
+      Text {
+        id: resetText
+        width: parent.width
+        text: "Reset to defaults"
+        color: resetMouse.containsMouse
+               ? (root.bar ? root.bar.barForeground : "white")
+               : (root.bar ? Qt.darker(root.bar.foreground, 1.8) : Color.foreground)
+        font.family: root.bar ? root.bar.fontFamily : Style.font.family
+        font.pixelSize: Style.font.caption
+        font.underline: true
+        horizontalAlignment: Text.AlignLeft
+        MouseArea{
+          id: resetMouse
+          anchors.fill: parent
+          cursorShape: Qt.PointingHandCursor
+          hoverEnabled: true
+          onClicked:{
+            root.saveSetting("iconSaturation", 100)
+            root.saveSetting("iconSize", 16)
+            root.saveSetting("maxWidth", 280)
+          }
+        }
+      }
     }
   }
 
