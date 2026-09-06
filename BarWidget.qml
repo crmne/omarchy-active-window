@@ -174,6 +174,7 @@ BarWidget {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         text: root.title
+        textFormat: Text.PlainText
         color: root.bar ? root.bar.barForeground : Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.body
@@ -233,6 +234,7 @@ BarWidget {
         text: root.desktopEntry
           ? String(root.desktopEntry.name || root.appClass)
           : (root.appClass || "No desktop entry matched")
+        textFormat: Text.PlainText
         color: root.bar ? Qt.darker(root.bar.foreground, 1.45) : Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
