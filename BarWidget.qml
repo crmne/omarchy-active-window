@@ -41,6 +41,7 @@ BarWidget {
   readonly property string iconSource: resolveIconSource(iconName)
 
   readonly property bool showTitle: setting("showTitle", true) === true
+  readonly property bool animations: setting("animations", true) === true
   readonly property int maxLabelWidth: Math.max(80, Number(setting("maxWidth", 280)))
   readonly property int configuredIconSize: Math.max(12, Number(setting("iconSize", 16)))
   readonly property int iconSize: Math.min(configuredIconSize, Math.max(12, barSize - Style.space(6)))
@@ -58,6 +59,7 @@ BarWidget {
   implicitHeight: barSize
 
   Behavior on implicitWidth {
+    enabled: root.animations
     NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
   }
 
@@ -287,6 +289,17 @@ BarWidget {
         accent: Color.accent
         fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
         onClicked: root.saveSetting("showTitle", !root.showTitle)
+      }
+
+      Toggle {
+        width: parent.width
+        label: "Animations"
+        description: "Enable size animations."
+        checked: root.animations
+        foreground: root.bar ? root.bar.foreground : Color.foreground
+        accent: Color.accent
+        fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+        onClicked: root.saveSetting("animations", !root.animations)
       }
     }
   }
