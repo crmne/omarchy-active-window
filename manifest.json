@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "author": "Carmine Paolino",
   "license": "MIT",
-  "description": "Active-window title with the current application's desktop icon and adjustable icon saturation.",
+  "description": "Active-window title with the current application's desktop icon, with controls for icon saturation and size, title width and visibility, and switching animations.",
   "kinds": [
     "bar-widget"
   ],
@@ -22,7 +22,8 @@
       "iconSaturation": 100,
       "iconSize": 16,
       "maxWidth": 280,
-      "showTitle": true
+      "showTitle": true,
+      "animations": true
     },
     "schema": [
       {
@@ -60,6 +61,13 @@
         "type": "boolean",
         "label": "Show window title",
         "description": "Disable this for an icon-only active-window widget.",
+        "defaultValue": true
+      },
+      {
+        "key": "animations",
+        "type": "boolean",
+        "label": "Enable animations",
+        "description": "Enable size animations.",
         "defaultValue": true
       }
     ]
