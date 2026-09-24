@@ -46,9 +46,9 @@ omarchy plugin enable crmne.active-window --section left --after omarchy.workspa
 ```
 
 The Omarchy bar settings UI exposes icon saturation from 0% (grayscale) through
-100% (the original icon) to 200% (boosted), plus icon size, title width, and an
-icon-only toggle.
+100% (the original icon) to 200% (boosted), plus icon size, title width, an
+icon-only toggle, and an animated width resize toggle.
 
 Left click activates the window, middle click closes it, and right click opens
 an appearance panel. The panel previews and persists saturation, icon size,
-title width, and the icon-only toggle directly in `shell.json`.
+title width, the icon-only toggle, and animated width directly in `shell.json`.
