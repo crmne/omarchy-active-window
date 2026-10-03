@@ -51,4 +51,4 @@ icon-only toggle.
 
 Left click activates the window, middle click closes it, and right click opens
 an appearance panel. The panel previews and persists saturation, icon size,
-title width, and the icon-only toggle directly in `shell.json`.
+title width, icon-only, and the animations toggle directly in `shell.json`.
