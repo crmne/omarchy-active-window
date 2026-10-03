@@ -22,7 +22,8 @@
       "iconSaturation": 100,
       "iconSize": 16,
       "maxWidth": 280,
-      "showTitle": true
+      "showTitle": true,
+      "animateWidth": true
     },
     "schema": [
       {
@@ -60,6 +61,13 @@
         "type": "boolean",
         "label": "Show window title",
         "description": "Disable this for an icon-only active-window widget.",
+        "defaultValue": true
+      },
+      {
+        "key": "animateWidth",
+        "type": "boolean",
+        "label": "Animate width changes",
+        "description": "Turn this off for instant title and icon updates.",
         "defaultValue": true
       }
     ]
