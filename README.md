@@ -3,7 +3,14 @@
 A native Quattro/Quickshell active-window widget with the focused
 application's actual desktop icon and its window title.
 
-![Active Window appearance settings with saturation, icon size, title width, and title visibility controls](preview.png)
+![Bar strips with the Active Window widget, titled and icon-only, and its right-click appearance panel](preview.png)
+
+The preview shows the actual widget and appearance panel, rendered in an
+isolated offscreen capture host with a synthetic window title and workspaces,
+over Omarchy's Ristretto wallpaper. The icons come from installed desktop
+entries (Typora, and Files at 0% saturation in icon-only mode). To regenerate
+it on an Omarchy machine, run `tools/capture/capture.py` under an exclusive
+GPU lock; it refuses a software-rendered capture.
 
 Icon lookup uses three pieces of runtime information, in order to handle both
 normal applications and Chromium web apps:
