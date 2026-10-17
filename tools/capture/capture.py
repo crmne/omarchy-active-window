@@ -25,7 +25,8 @@ ROOT = Path(__file__).resolve().parents[2]
 TOOLS = Path(__file__).resolve().parent
 OMARCHY = Path("/usr/share/omarchy")
 SHELL = OMARCHY / "shell"
-WALLPAPER = OMARCHY / "themes/ristretto/backgrounds/0-launch.png"
+# Device pixels per logical pixel, so compose.py can show the bar large and sharp.
+SCALE = 6
 
 # Invented titles. The desktop entries (and so the icons) are installed apps.
 FIXTURES = {
@@ -146,9 +147,9 @@ def main():
         (work / "screen.json").write_text(json.dumps({"screens": [dict(
             name="CAPTURE", x=0, y=0, width=6400, height=4000, logicalDpi=96, logicalBaseDpi=96, dpr=1)]}))
         env.update(QT_QPA_PLATFORM=f"offscreen:configfile={work / 'screen.json'}",
-                   QT_QUICK_BACKEND="rhi", QSG_RHI_BACKEND="opengl", QSG_INFO="1", QT_SCALE_FACTOR="4",
+                   QT_QUICK_BACKEND="rhi", QSG_RHI_BACKEND="opengl", QSG_INFO="1", QT_SCALE_FACTOR=str(SCALE),
                    CAPTURE_PLUGIN=str(plugin), CAPTURE_FIXTURES=str(work / "fixtures.json"),
-                   CAPTURE_OUTPUT=str(output), CAPTURE_WALLPAPER=str(WALLPAPER))
+                   CAPTURE_OUTPUT=str(output))
 
         def call(method, *args):
             result = subprocess.run(["qs", "ipc", "-p", str(shell), "call", "--", "capture", method, *map(str, args)],
@@ -177,11 +178,10 @@ def main():
                     assert state["entry"] and state["icon"] and state["pidLookup"] == 0, state
                     time.sleep(.8)
                     grab("grabBar", f"bar-{name}.png")
-                    if popup: grab("grabPopup", "settings.png")
-                call("preparePreview")
-                time.sleep(.8)
-                preview = grab("grabPreview", "preview.png")
-                shutil.copy(preview, ROOT / "preview.png")
+                    if popup:
+                        grab("grabPopup", "settings.png")
+                        (output / "layout.json").write_text(json.dumps(dict(
+                            scale=SCALE, widgetX=state["widgetX"])))
             finally:
                 proc.terminate()
                 proc.wait(timeout=5)
@@ -192,6 +192,7 @@ def main():
                     if "OpenGL VENDOR" in line or "WARN" in line or "ERROR" in line: print(line, file=sys.stderr)
         if "NVIDIA" not in log_text or "llvmpipe" in log_text or "Software" in log_text:
             raise RuntimeError("Capture must use NVIDIA GPU rendering; inspect capture.log")
+    subprocess.run([sys.executable, str(TOOLS / "compose.py"), str(output)], check=True)
 
 
 if __name__ == "__main__": main()

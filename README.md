@@ -10,7 +10,9 @@ isolated offscreen capture host with a synthetic window title and workspaces,
 over Omarchy's Ristretto wallpaper. The icons come from installed desktop
 entries (Typora, and Files at 0% saturation in icon-only mode). To regenerate
 it on an Omarchy machine, run `tools/capture/capture.py` under an exclusive
-GPU lock; it refuses a software-rendered capture.
+GPU lock; it refuses a software-rendered capture, then
+`tools/capture/compose.py` lays the renders out large enough to read in the
+marketplace card's crop.
 
 Icon lookup uses three pieces of runtime information, in order to handle both
 normal applications and Chromium web apps:
