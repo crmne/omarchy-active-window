@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 """Capture the production widget with synthetic window data for preview.png.
 
-Run through an exclusive GPU lock (the maintainer uses gpu-lock). Requires the
-installed Omarchy shell, Quickshell and an OpenGL-capable GPU. Everything runs
-on Qt's offscreen platform with its own HOME and runtime directory, so no
-window appears and no Hyprland session is read or changed.
+Requires the installed Omarchy shell, Quickshell and a hardware OpenGL GPU; a
+software-rendered capture is refused. Everything runs on Qt's offscreen
+platform with its own HOME and runtime directory, so no window appears and no
+Hyprland session is read or changed. CAPTURE_THEME picks another installed
+Omarchy theme (ristretto by default), for example to check a light theme.
 
 Only screenshot-host copies are adapted: the widget's Hyprland and Wayland
 toplevel sources are replaced with a synthetic window (PID 0, so the
@@ -27,6 +28,7 @@ OMARCHY = Path("/usr/share/omarchy")
 SHELL = OMARCHY / "shell"
 # Device pixels per logical pixel, so compose.py can show the bar large and sharp.
 SCALE = 6
+THEME = os.environ.get("CAPTURE_THEME", "ristretto")
 
 # Invented titles. The desktop entries (and so the icons) are installed apps.
 FIXTURES = {
@@ -117,7 +119,7 @@ def main():
         runtime = Path(tempfile.mkdtemp(prefix="aw-", dir=os.environ.get("XDG_RUNTIME_DIR")))
         theme = home / ".local/state/omarchy/current/next-theme"
         theme.mkdir(parents=True)
-        shutil.copy(OMARCHY / "themes/ristretto/colors.toml", theme / "colors.toml")
+        shutil.copy(OMARCHY / "themes" / THEME / "colors.toml", theme / "colors.toml")
         env = dict(HOME=str(home), PATH="/usr/bin:/bin", LANG="C.UTF-8",
                    XDG_RUNTIME_DIR=str(runtime), OMARCHY_PATH=str(OMARCHY),
                    DISPLAY=os.environ.get("DISPLAY", ":0"))
@@ -190,8 +192,9 @@ def main():
                 (output / "capture.log").write_text(log_text)
                 for line in log_text.splitlines():
                     if "OpenGL VENDOR" in line or "WARN" in line or "ERROR" in line: print(line, file=sys.stderr)
-        if "NVIDIA" not in log_text or "llvmpipe" in log_text or "Software" in log_text:
-            raise RuntimeError("Capture must use NVIDIA GPU rendering; inspect capture.log")
+        renderers = [line for line in log_text.splitlines() if "OpenGL VENDOR" in line]
+        if not renderers or any(re.search(r"llvmpipe|softpipe|Software", line) for line in renderers):
+            raise RuntimeError("Capture must use hardware GPU rendering; inspect capture.log")
     subprocess.run([sys.executable, str(TOOLS / "compose.py"), str(output)], check=True)
 
 

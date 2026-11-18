@@ -14,7 +14,8 @@ import sys
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
-WALLPAPER = Path("/usr/share/omarchy/themes/ristretto/backgrounds/0-launch.png")
+# Omarchy 4.5 ships the launch wallpaper as WebP; earlier releases as PNG.
+WALLPAPER = min(Path("/usr/share/omarchy/themes/ristretto/backgrounds").glob("0-launch.*"))
 W, H = 2560, 1600
 # Card pixels per logical pixel of the shell.
 BAR_ZOOM, PANEL_ZOOM = 6, 3
