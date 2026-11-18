@@ -5,6 +5,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 import "AppIconModel.js" as AppIconModel
 
@@ -154,7 +155,7 @@ BarWidget {
         anchors.centerIn: parent
         visible: appIcon.status === Image.Error
         text: "󰖯"
-        color: root.bar ? root.bar.barForeground : Color.foreground
+        color: root.bar ? root.bar.barForeground : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.body
       }
@@ -175,7 +176,7 @@ BarWidget {
         anchors.verticalCenter: parent.verticalCenter
         text: root.title
         textFormat: Text.PlainText
-        color: root.bar ? root.bar.barForeground : Color.foreground
+        color: root.bar ? root.bar.barForeground : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.body
         elide: Text.ElideRight
@@ -223,7 +224,7 @@ BarWidget {
 
       Text {
         text: "ACTIVE WINDOW"
-        color: root.bar ? root.bar.foreground : Color.foreground
+        color: root.bar ? root.bar.foreground : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.subtitle
         font.bold: true
@@ -235,14 +236,14 @@ BarWidget {
           ? String(root.desktopEntry.name || root.appClass)
           : (root.appClass || "No desktop entry matched")
         textFormat: Text.PlainText
-        color: root.bar ? Qt.darker(root.bar.foreground, 1.45) : Color.foreground
+        color: root.bar ? Qt.darker(root.bar.foreground, 1.45) : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
         elide: Text.ElideRight
       }
 
       PanelSeparator {
-        foreground: root.bar ? root.bar.foreground : Color.foreground
+        foreground: root.bar ? root.bar.foreground : Commons.Color.foreground
       }
 
       SettingSlider {
@@ -283,8 +284,8 @@ BarWidget {
         label: "Show window title"
         description: "Turn this off for an icon-only widget."
         checked: root.showTitle
-        foreground: root.bar ? root.bar.foreground : Color.foreground
-        accent: Color.accent
+        foreground: root.bar ? root.bar.foreground : Commons.Color.foreground
+        accent: Commons.Color.accent
         fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
         onClicked: root.saveSetting("showTitle", !root.showTitle)
       }
@@ -315,7 +316,7 @@ BarWidget {
         id: settingLabel
         anchors.left: parent.left
         text: sliderSetting.label
-        color: root.bar ? root.bar.foreground : Color.foreground
+        color: root.bar ? root.bar.foreground : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.body
       }
@@ -324,7 +325,7 @@ BarWidget {
         id: settingValue
         anchors.right: parent.right
         text: Math.round(slider.dragging ? slider.liveValue : sliderSetting.currentValue) + sliderSetting.suffix
-        color: root.bar ? Qt.darker(root.bar.foreground, 1.35) : Color.foreground
+        color: root.bar ? Qt.darker(root.bar.foreground, 1.35) : Commons.Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.caption
       }

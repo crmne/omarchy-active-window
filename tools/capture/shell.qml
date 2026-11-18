@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Commons as Commons
 
 ShellRoot {
   id: host
@@ -22,10 +23,10 @@ ShellRoot {
     property real barSize: Style.bar.sizeHorizontal
     property bool vertical: false
     property bool foregroundAnimationEnabled: false
-    property color urgent: Color.bar.active
-    property color background: Color.bar.background
-    property color barForeground: Color.bar.text
-    property color foreground: Color.bar.text
+    property color urgent: Commons.Color.bar.active
+    property color background: Commons.Color.bar.background
+    property color barForeground: Commons.Color.bar.text
+    property color foreground: Commons.Color.bar.text
     property string fontFamily: Style.font.family
     property var activePopout: null
     function requestPopout(key) { activePopout = key }
@@ -46,7 +47,7 @@ ShellRoot {
       id: strip
       width: row.width + Style.space(16)
       height: bar.barSize
-      color: Color.bar.background
+      color: Commons.Color.bar.background
       radius: 6
 
       Row {
