@@ -145,6 +145,20 @@ ShellRoot {
         assert(widget.animateWidth === false && toggle.checked === false, "the toggle did not turn the animation off")
         toggle.clicked()
         assert(writes.length === 2 && writes[1].settings.animateWidth === true, "the toggle did not turn it back on")
+      } }],
+      [{ delay: 0, run: function() {
+        widget.settings = { id: "crmne.active-window", iconSaturation: 0, iconSize: 22, maxWidth: 600,
+                            showTitle: false, animateWidth: false }
+        writes = []
+        control("text", "Reset to defaults").clicked()
+        var expected = { id: "crmne.active-window", iconSaturation: 100, iconSize: 16, maxWidth: 280,
+                         showTitle: true, animateWidth: true }
+        assert(writes.length === 1, "reset should save once, saved " + writes.length + " times")
+        assert(JSON.stringify(writes[0].settings) === JSON.stringify(expected),
+          "unexpected reset settings " + JSON.stringify(writes[0].settings))
+        assert(widget.showTitle && widget.animateWidth && widget.maxLabelWidth === 280
+          && widget.configuredIconSize === 16 && widget.saturationEffect === 0, "the widget did not return to its defaults")
+        assert(control("label", "Show window title").checked === true, "the title toggle did not follow the reset")
       } }]
     )
     next()

@@ -8,6 +8,7 @@ import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
 import "AppIconModel.js" as AppIconModel
+import "SettingsModel.js" as SettingsModel
 
 BarWidget {
   id: root
@@ -41,18 +42,19 @@ BarWidget {
   readonly property string iconName: desktopEntry ? String(desktopEntry.icon || "") : ""
   readonly property string iconSource: resolveIconSource(iconName)
 
-  readonly property bool showTitle: setting("showTitle", true) === true
-  readonly property bool animateWidth: setting("animateWidth", true) === true
+  readonly property var settingDefaults: SettingsModel.defaults()
+  readonly property bool showTitle: setting("showTitle", settingDefaults.showTitle) === true
+  readonly property bool animateWidth: setting("animateWidth", settingDefaults.animateWidth) === true
   // Omarchy 4.5 and later turn shell animations off along with Hyprland's
   // (`omarchy toggle animations`) through Style.duration; older shells lack it.
   readonly property int widthAnimationDuration: animateWidth
     ? (typeof Style.duration === "function" ? Style.duration(180) : 180)
     : 0
-  readonly property int maxLabelWidth: Math.max(80, Number(setting("maxWidth", 280)))
-  readonly property int configuredIconSize: Math.max(12, Number(setting("iconSize", 16)))
+  readonly property int maxLabelWidth: Math.max(80, Number(setting("maxWidth", settingDefaults.maxWidth)))
+  readonly property int configuredIconSize: Math.max(12, Number(setting("iconSize", settingDefaults.iconSize)))
   readonly property int iconSize: Math.min(configuredIconSize, Math.max(12, barSize - Style.space(6)))
   readonly property real saturationEffect: {
-    var percent = Math.max(0, Math.min(200, Number(setting("iconSaturation", 100))))
+    var percent = Math.max(0, Math.min(200, Number(setting("iconSaturation", settingDefaults.iconSaturation))))
     return (percent - 100) / 100
   }
 
@@ -104,10 +106,20 @@ BarWidget {
     settings = next
   }
 
-  function saveSetting(key, value) {
-    previewSetting(key, value)
+  function persistSettings() {
     if (bar && bar.shell && typeof bar.shell.updateEntryInline === "function")
       bar.shell.updateEntryInline(moduleName, settings)
+  }
+
+  function saveSetting(key, value) {
+    previewSetting(key, value)
+    persistSettings()
+  }
+
+  // Every declared setting returns to its default in a single write.
+  function resetSettings() {
+    settings = SettingsModel.reset(settings)
+    persistSettings()
   }
 
   onActivePidChanged: Qt.callLater(refreshExecutable)
@@ -259,7 +271,7 @@ BarWidget {
         minimum: 0
         maximum: 200
         step: 5
-        currentValue: Number(root.setting("iconSaturation", 100))
+        currentValue: Number(root.setting("iconSaturation", root.settingDefaults.iconSaturation))
         onPreviewed: function(value) { root.previewSetting("iconSaturation", Math.round(value)) }
         onCommitted: function(value) { root.saveSetting("iconSaturation", Math.round(value)) }
       }
@@ -270,7 +282,7 @@ BarWidget {
         minimum: 12
         maximum: 22
         step: 1
-        currentValue: Number(root.setting("iconSize", 16))
+        currentValue: Number(root.setting("iconSize", root.settingDefaults.iconSize))
         onPreviewed: function(value) { root.previewSetting("iconSize", Math.round(value)) }
         onCommitted: function(value) { root.saveSetting("iconSize", Math.round(value)) }
       }
@@ -281,7 +293,7 @@ BarWidget {
         minimum: 80
         maximum: 600
         step: 10
-        currentValue: Number(root.setting("maxWidth", 280))
+        currentValue: Number(root.setting("maxWidth", root.settingDefaults.maxWidth))
         onPreviewed: function(value) { root.previewSetting("maxWidth", Math.round(value / 10) * 10) }
         onCommitted: function(value) { root.saveSetting("maxWidth", Math.round(value / 10) * 10) }
       }
@@ -306,6 +318,17 @@ BarWidget {
         accent: Commons.Color.accent
         fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
         onClicked: root.saveSetting("animateWidth", !root.animateWidth)
+      }
+
+      Button {
+        width: parent.width
+        text: "Reset to defaults"
+        bordered: true
+        focusable: true
+        foreground: root.bar ? root.bar.foreground : Commons.Color.foreground
+        accent: Commons.Color.accent
+        fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+        onClicked: root.resetSettings()
       }
     }
   }

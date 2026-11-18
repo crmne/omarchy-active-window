@@ -16,6 +16,8 @@ dependency, privileged helper, or a general task switcher.
   than embedding more matching logic in QML.
 - `manifest.json` is the plugin contract. Keep its ID, entry point, settings
   schema, defaults, README descriptions, and QML fallback values consistent.
+  `SettingsModel.js` holds the defaults the QML falls back to and resets to;
+  a new setting goes in both files.
 - The plugin deliberately has no service, helper script, or additional
   package. New process execution or filesystem access needs a narrow reason
   and explicit maintainer approval.
@@ -85,9 +87,10 @@ product decision, documentation, and real testing.
 
 ## Verification and review
 
-Run `python3 tests/widget.py`, which loads the real widget offscreen with a
-synthetic window and checks the width animation and the appearance panel's
-controls. Syntax-check changed JavaScript with `node --check AppIconModel.js`
+Run `node --test tests/`, which keeps `SettingsModel.js` defaults equal to
+the manifest, and `python3 tests/widget.py`, which loads the real widget
+offscreen with a synthetic window and checks the width animation and the
+appearance panel's controls. Syntax-check changed JavaScript with `node --check AppIconModel.js`
 and validate `manifest.json` with `python3 -m json.tool manifest.json`. When
 matching behavior changes, add a small Node test suite covering exact IDs,
 `StartupWMClass`, commands, Chromium web-app identifiers, minimum segment
