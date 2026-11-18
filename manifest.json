@@ -67,7 +67,7 @@
         "key": "animateWidth",
         "type": "boolean",
         "label": "Animate width changes",
-        "description": "Turn this off for instant title and icon updates.",
+        "description": "Disable this to resize the widget instantly instead of sliding to a new width.",
         "defaultValue": true
       }
     ]

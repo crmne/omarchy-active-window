@@ -43,6 +43,11 @@ BarWidget {
 
   readonly property bool showTitle: setting("showTitle", true) === true
   readonly property bool animateWidth: setting("animateWidth", true) === true
+  // Omarchy 4.5 and later turn shell animations off along with Hyprland's
+  // (`omarchy toggle animations`) through Style.duration; older shells lack it.
+  readonly property int widthAnimationDuration: animateWidth
+    ? (typeof Style.duration === "function" ? Style.duration(180) : 180)
+    : 0
   readonly property int maxLabelWidth: Math.max(80, Number(setting("maxWidth", 280)))
   readonly property int configuredIconSize: Math.max(12, Number(setting("iconSize", 16)))
   readonly property int iconSize: Math.min(configuredIconSize, Math.max(12, barSize - Style.space(6)))
@@ -60,8 +65,8 @@ BarWidget {
   implicitHeight: barSize
 
   Behavior on implicitWidth {
-    enabled: root.animateWidth
-    NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+    enabled: root.widthAnimationDuration > 0
+    NumberAnimation { duration: root.widthAnimationDuration; easing.type: Easing.OutCubic }
   }
 
   function resolveIconSource(icon) {
@@ -295,10 +300,10 @@ BarWidget {
       Toggle {
         width: parent.width
         label: "Animate width changes"
-        description: "Turn this off for instant title and icon updates."
+        description: "Turn this off to resize instantly when the title changes."
         checked: root.animateWidth
-        foreground: root.bar ? root.bar.foreground : Color.foreground
-        accent: Color.accent
+        foreground: root.bar ? root.bar.foreground : Commons.Color.foreground
+        accent: Commons.Color.accent
         fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
         onClicked: root.saveSetting("animateWidth", !root.animateWidth)
       }

@@ -55,8 +55,25 @@ omarchy plugin enable crmne.active-window --section left --after omarchy.workspa
 
 The Omarchy bar settings UI exposes icon saturation from 0% (grayscale) through
 100% (the original icon) to 200% (boosted), plus icon size, title width, an
-icon-only toggle, and an animated width resize toggle.
+icon-only toggle, and a toggle for the width animation.
+
+The widget slides to its new width when the title changes. Turn off **Animate
+width changes** to resize it instantly. On Omarchy 4.5 and later it also
+resizes instantly while Omarchy's animations are off (`omarchy toggle
+animations`).
 
 Left click activates the window, middle click closes it, and right click opens
 an appearance panel. The panel previews and persists saturation, icon size,
-title width, the icon-only toggle, and animated width directly in `shell.json`.
+title width, the icon-only toggle, and the width animation toggle directly in
+`shell.json`.
+
+## Tests
+
+```bash
+python3 tests/widget.py
+```
+
+The widget test needs the installed Omarchy shell and Quickshell. It loads the
+actual widget and Omarchy UI components offscreen with a synthetic window,
+checks the width animation and the appearance panel's controls, and records
+settings writes instead of saving them.

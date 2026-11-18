@@ -85,12 +85,13 @@ product decision, documentation, and real testing.
 
 ## Verification and review
 
-There is currently no packaged test runner. At minimum, syntax-check changed
-JavaScript with `node --check AppIconModel.js` and validate `manifest.json` with
-`python3 -m json.tool manifest.json`. When matching behavior changes, add a
-small Node test suite covering exact IDs, `StartupWMClass`, commands, Chromium
-web-app identifiers, minimum segment lengths, collisions, ties, empty input,
-and malformed entries. Exercise QML changes in a live Omarchy shell and report
+Run `python3 tests/widget.py`, which loads the real widget offscreen with a
+synthetic window and checks the width animation and the appearance panel's
+controls. Syntax-check changed JavaScript with `node --check AppIconModel.js`
+and validate `manifest.json` with `python3 -m json.tool manifest.json`. When
+matching behavior changes, add a small Node test suite covering exact IDs,
+`StartupWMClass`, commands, Chromium web-app identifiers, minimum segment
+lengths, collisions, ties, empty input, and malformed entries. Exercise QML changes in a live Omarchy shell and report
 that manual coverage honestly; a syntax or code review is not a UI test.
 
 When reviewing a pull request, start with its user-visible interaction and
