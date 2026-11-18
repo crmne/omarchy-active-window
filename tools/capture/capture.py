@@ -142,7 +142,7 @@ def main():
         shutil.copy(SHELL / "plugins/bar/widgets/Workspaces.qml", shell / "Workspaces.qml")
         capture_workspaces(shell / "Workspaces.qml")
         plugin.mkdir()
-        for name in ["BarWidget.qml", "AppIconModel.js"]: shutil.copy(ROOT / name, plugin / name)
+        for path in [ROOT / "BarWidget.qml", *ROOT.glob("*.js")]: shutil.copy(path, plugin / path.name)
         capture_widget(plugin / "BarWidget.qml")
         shutil.copy(TOOLS / "shell.qml", shell / "shell.qml")
         (work / "fixtures.json").write_text(json.dumps(FIXTURES))
