@@ -48,6 +48,17 @@ BarWidget {
     ? (checkedIconPath === iconPath ? Util.fileUrl(iconPath) : resolveIconSource(""))
     : resolveIconSource(iconName)
 
+  // The window the label names: the Hyprland window while it has a title or
+  // class to show, else the Wayland one. Clicks act on this window only.
+  readonly property string labelSource: (hyprlandToplevel && hyprlandToplevel.title) ? "hyprland"
+    : (waylandToplevel && waylandToplevel.title) ? "wayland"
+    : ipcObject.class ? "hyprland"
+    : (waylandToplevel && waylandToplevel.appId) ? "wayland"
+    : ""
+  readonly property var shownToplevel: labelSource === "hyprland"
+    ? (hyprlandToplevel.wayland || null)
+    : (labelSource === "wayland" ? waylandToplevel : null)
+
   readonly property var settingDefaults: SettingsModel.defaults()
   readonly property bool showTitle: setting("showTitle", settingDefaults.showTitle) === true
   readonly property bool animateWidth: setting("animateWidth", settingDefaults.animateWidth) === true
@@ -91,6 +102,14 @@ BarWidget {
     iconCheck.path = iconPath
     iconCheck.command = ["test", "-f", iconPath]
     iconCheck.running = true
+  }
+
+  function closeShownWindow() {
+    if (shownToplevel) shownToplevel.close()
+  }
+
+  function activateShownWindow() {
+    if (shownToplevel) shownToplevel.activate()
   }
 
   function refreshExecutable() {
@@ -235,16 +254,16 @@ BarWidget {
     anchors.fill: parent
     hoverEnabled: true
     acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-    cursorShape: root.waylandToplevel ? Qt.PointingHandCursor : Qt.ArrowCursor
+    cursorShape: root.shownToplevel ? Qt.PointingHandCursor : Qt.ArrowCursor
 
     onClicked: function(mouse) {
       if (mouse.button === Qt.RightButton) {
         root.settingsOpen = !root.settingsOpen
       } else if (mouse.button === Qt.MiddleButton) {
-        if (root.waylandToplevel) root.waylandToplevel.close()
+        root.closeShownWindow()
       } else {
         root.settingsOpen = false
-        if (root.waylandToplevel) root.waylandToplevel.activate()
+        root.activateShownWindow()
       }
     }
     onEntered: if (root.bar) {

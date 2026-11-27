@@ -64,11 +64,11 @@ width changes** to resize it instantly. On Omarchy 4.5 and later it also
 resizes instantly while Omarchy's animations are off (`omarchy toggle
 animations`).
 
-Left click activates the window, middle click closes it, and right click opens
-an appearance panel. The panel previews and persists saturation, icon size,
-title width, the icon-only toggle, and the width animation toggle directly in
-`shell.json`. **Reset to defaults** returns all of them to their defaults at
-once.
+Left click activates the window the label shows, middle click closes that
+same window, and right click opens an appearance panel. The panel previews
+and persists saturation, icon size, title width, the icon-only toggle, and the
+width animation toggle directly in `shell.json`. **Reset to defaults** returns
+all of them to their defaults at once.
 
 ## Tests
 
@@ -81,5 +81,6 @@ The Node tests check that the widget's defaults match `manifest.json` and how
 a reset treats stored settings. The widget test needs the installed Omarchy
 shell and Quickshell. It loads the actual widget and Omarchy UI components
 offscreen with a synthetic window, checks the width animation, the
-appearance panel's controls, and that an icon path is loaded only when it is
-a regular file, and records settings writes instead of saving them.
+appearance panel's controls, that clicks act on the window the label shows,
+and that an icon path is loaded only when it is a regular file, and records
+settings writes instead of saving them.

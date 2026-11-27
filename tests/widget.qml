@@ -113,6 +113,36 @@ ShellRoot {
     ]
   }
 
+  // A stand-in for a Wayland toplevel that records what was asked of it.
+  function fakeToplevel(title) {
+    return { title: title, appId: "", closed: 0, activated: 0,
+             close: function() { this.closed++ }, activate: function() { this.activated++ } }
+  }
+
+  function windowSteps() {
+    return [{ delay: 0, run: function() {
+      var labelled = fakeToplevel("Labelled")
+      var other = fakeToplevel("Other")
+      widget.hyprlandToplevel = { title: "Labelled", wayland: labelled, lastIpcObject: { "class": "app", pid: 0 } }
+      widget.waylandToplevel = other
+      assert(widget.title === "Labelled", "the label should show the Hyprland window, got " + widget.title)
+      widget.closeShownWindow()
+      widget.activateShownWindow()
+      assert(labelled.closed === 1 && labelled.activated === 1, "the labelled window was not the one acted on")
+      assert(other.closed === 0 && other.activated === 0, "a window the label does not show was acted on")
+
+      widget.hyprlandToplevel = { title: "Labelled", wayland: null, lastIpcObject: {} }
+      widget.closeShownWindow()
+      assert(other.closed === 0, "with no Wayland handle for the labelled window, nothing should close")
+
+      widget.hyprlandToplevel = null
+      assert(widget.title === "Other", "without Hyprland the label should show the Wayland window")
+      widget.closeShownWindow()
+      assert(other.closed === 1, "the Wayland window the label shows should close")
+      widget.waylandToplevel = null
+    } }]
+  }
+
   function iconSteps() {
     var fifo = Quickshell.env("WIDGET_TEST_FIFO_ICON")
     var image = Quickshell.env("WIDGET_TEST_FILE_ICON")
@@ -135,6 +165,7 @@ ShellRoot {
 
   function start() {
     steps = [].concat(
+      windowSteps(),
       iconSteps(),
       [{ delay: 0, run: function() {
         assert(widget.animateWidth === true, "the width animation must default to on")
