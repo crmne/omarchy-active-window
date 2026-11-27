@@ -95,6 +95,21 @@ function resolve(entries, candidates) {
   return bestScore >= 800 ? bestEntry : null
 }
 
+// The local file a desktop entry's icon names directly (an absolute path or a
+// file:// URL), or "" for a themed icon name. The widget loads such a file only
+// once it has checked that it is a regular file.
+function localIconPath(icon) {
+  var value = String(icon || "")
+  if (value.indexOf("file://") === 0) {
+    try {
+      value = decodeURIComponent(value.slice(7))
+    } catch (e) {
+      return ""
+    }
+  }
+  return value.charAt(0) === "/" ? value : ""
+}
+
 if (typeof module !== "undefined") {
   module.exports = {
     normalized: normalized,
@@ -102,6 +117,7 @@ if (typeof module !== "undefined") {
     finalSegment: finalSegment,
     executableName: executableName,
     matchScore: matchScore,
-    resolve: resolve
+    resolve: resolve,
+    localIconPath: localIconPath
   }
 }

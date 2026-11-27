@@ -40,7 +40,13 @@ BarWidget {
   readonly property var desktopEntries: DesktopEntries.applications ? DesktopEntries.applications.values : []
   readonly property var desktopEntry: AppIconModel.resolve(desktopEntries, [appClass, initialClass, executableName])
   readonly property string iconName: desktopEntry ? String(desktopEntry.icon || "") : ""
-  readonly property string iconSource: resolveIconSource(iconName)
+  // An icon given as a file path is loaded only once it is known to be a
+  // regular file: a FIFO or device there would stall the shared image loader.
+  readonly property string iconPath: AppIconModel.localIconPath(iconName)
+  property string checkedIconPath: ""
+  readonly property string iconSource: iconPath
+    ? (checkedIconPath === iconPath ? Util.fileUrl(iconPath) : resolveIconSource(""))
+    : resolveIconSource(iconName)
 
   readonly property var settingDefaults: SettingsModel.defaults()
   readonly property bool showTitle: setting("showTitle", settingDefaults.showTitle) === true
@@ -78,6 +84,13 @@ BarWidget {
     if (value.indexOf("file://") === 0 || value.indexOf("image://") === 0) return value
     if (value.charAt(0) === "/") return Util.fileUrl(value)
     return Quickshell.iconPath(value, true) || Quickshell.iconPath("application-x-executable", true)
+  }
+
+  function checkIconPath() {
+    if (!iconPath || checkedIconPath === iconPath || iconCheck.running) return
+    iconCheck.path = iconPath
+    iconCheck.command = ["test", "-f", iconPath]
+    iconCheck.running = true
   }
 
   function refreshExecutable() {
@@ -123,6 +136,17 @@ BarWidget {
   }
 
   onActivePidChanged: Qt.callLater(refreshExecutable)
+  onIconPathChanged: Qt.callLater(checkIconPath)
+
+  Process {
+    id: iconCheck
+    property string path: ""
+
+    onExited: function(exitCode) {
+      if (exitCode === 0 && path === root.iconPath) root.checkedIconPath = path
+      if (path !== root.iconPath) Qt.callLater(root.checkIconPath)
+    }
+  }
 
   Process {
     id: executableLookup
@@ -140,7 +164,10 @@ BarWidget {
     }
   }
 
-  Component.onCompleted: refreshExecutable()
+  Component.onCompleted: {
+    refreshExecutable()
+    checkIconPath()
+  }
 
   Row {
     id: contents

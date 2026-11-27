@@ -113,8 +113,29 @@ ShellRoot {
     ]
   }
 
+  function iconSteps() {
+    var fifo = Quickshell.env("WIDGET_TEST_FIFO_ICON")
+    var image = Quickshell.env("WIDGET_TEST_FILE_ICON")
+    return [
+      { delay: 0, run: function() {
+        assert(fifo && image, "icon fixtures missing")
+        show("Icons")
+        widget.iconName = fifo
+      } },
+      { delay: 500, run: function() {
+        assert(widget.iconSource.indexOf("icon-fifo") === -1, "a FIFO icon path was loaded: " + widget.iconSource)
+        widget.iconName = "file://" + image
+      } },
+      { delay: 500, run: function() {
+        assert(widget.iconSource.indexOf("icon.png") !== -1, "a regular icon file was not loaded: " + widget.iconSource)
+        widget.iconName = ""
+      } }
+    ]
+  }
+
   function start() {
     steps = [].concat(
+      iconSteps(),
       [{ delay: 0, run: function() {
         assert(widget.animateWidth === true, "the width animation must default to on")
         assert(widget.widthAnimationDuration === 180, "unexpected default duration " + widget.widthAnimationDuration)

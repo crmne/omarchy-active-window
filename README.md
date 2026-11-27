@@ -21,7 +21,9 @@ normal applications and Chromium web apps:
 - the running process executable from `/proc/<pid>/exe`.
 
 Those values are matched against Freedesktop desktop entries, including
-`StartupWMClass`, and the matched entry's themed icon is rendered. Linux
+`StartupWMClass`, and the matched entry's themed icon is rendered. An entry
+whose icon is a file path is shown only once that path is known to be a
+regular file; until then the generic application icon stands in. Linux
 Wayland windows do not carry a portable embedded icon themselves, so this is
 the standard reliable route to the icon belonging to the running app.
 
@@ -78,6 +80,6 @@ python3 tests/widget.py
 The Node tests check that the widget's defaults match `manifest.json` and how
 a reset treats stored settings. The widget test needs the installed Omarchy
 shell and Quickshell. It loads the actual widget and Omarchy UI components
-offscreen with a synthetic window, checks the width animation and the
-appearance panel's controls, and records settings writes instead of saving
-them.
+offscreen with a synthetic window, checks the width animation, the
+appearance panel's controls, and that an icon path is loaded only when it is
+a regular file, and records settings writes instead of saving them.
